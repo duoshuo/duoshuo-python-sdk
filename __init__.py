@@ -85,9 +85,9 @@ class DuoshuoAPI(object):
         return self.secret_key
     key = property(_get_key)
 
-    def api(self, action):
+    def api(self, action, params):
         cookies = Cookie.SerialCookie()
-        if not cookies['access_token']:
+        if cookies['access_token']:
             print action
         else:
             raise APIError('02', 'Unauthorized client: please get_token')
