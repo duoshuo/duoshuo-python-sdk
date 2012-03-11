@@ -5,9 +5,9 @@
 #
 __version__ = '0.1'
 
-import httplib
 import os.path
 import urllib
+import urllib2
 import warnings
 import urlparse
 import binascii
@@ -31,6 +31,7 @@ except ImportError:
     import https.cookies as Cookie #python 3.0
 
 HOST = 'duoshuo.com'
+#HOST = '127.0.0.1'
 
 class APIError(Exception):
     def __init__(self, code, message):
@@ -66,7 +67,6 @@ class Result(object):
 
 
 class DuoshuoAPI(object):
-    
     def __init__(self, client_id=None, secret=None, version='1.0', **kwargs):
         self.client_id = client_id
         self.secret = secret
@@ -82,10 +82,10 @@ class DuoshuoAPI(object):
         raise SyntaxError('You cannot call the API without a resource.')
 
     def _get_key(self):
-        return self.secret_key
+        return self.secret
     key = property(_get_key)
 
-    def api(self, action, params):
+    def api(self, action, params=None):
         cookies = Cookie.SerialCookie()
         if cookies['access_token']:
             print action
