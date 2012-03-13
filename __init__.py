@@ -30,7 +30,8 @@ try:
 except ImportError:
     import https.cookies as Cookie #python 3.0
 
-HOST = 'api.duoshuo.com/oauth2'
+HOST = 'dmyz.duoshuo.com/api'
+#HOST = '127.0.0.1'
 
 class APIError(Exception):
     def __init__(self, code, message):
@@ -72,6 +73,7 @@ class DuoshuoAPI(object):
         if not secret:
             warnings.warn('You should pass ``secret``.')
         self.version = version
+        #self._auth()
     
     def __call__(self, **kwargs):
         print self.secret_key
@@ -95,25 +97,23 @@ class DuoshuoAPI(object):
             raise APIError('01', 'Invalid request: redirect_uri')
         else:
             params = {'client_id': self.client_id, 'redirect_uri': redirect_uri, 'response_type': 'code'}
-            return 'http://%s/%s?%s' % (HOST, 'authorize', \
+            return 'http://%s/%s?%s' % (HOST, 'oauth2', \
                 urllib.urlencode(sorted(params.items())))
     
-    def get_token(self, code=None):
-        if not code:
+    def get_token(self, code=None, redirect_uri=None):
+        if not redirect_uri:
+            raise APIError('01', 'Invalid request: redirect_uri')
+        elif not code:
             raise APIError('01', 'Invalid request: code')
-        #elif not redirect_uri:
-        #    raise APIError('01', 'Invalid request: redirect_uri')
         else:
-            #params = {'client_id': self.client_id, 'secret': self.secret, 'redirect_uri': redirect_uri, 'code': code}
-            params = {'code': code}
-            data = urllib.urlencode(params)
-            url = 'http://%s/%s' % (HOST, 'access_token')#, \
-                #urllib.urlencode(sorted(params.items())))
-            request = urllib2.Request(url)
-            response = urllib2.build_opener(urllib2.HTTPCookieProcessor()).open(request, data)
-            #file = urllib.urlopen(url)
-            #print 'url: '+url + '\r\ndata: ' + data
-            return eval(response.read())
+            params = {'client_id': self.client_id, 'secret': self.secret, 'redirect_uri': redirect_uri, 'code': code}
+            url = 'http://%s/%s?%s' % (HOST, 'token', \
+                urllib.urlencode(sorted(params.items())))
+            file = urllib.urlopen(url)
+            
+            #result = _parse_json(file.read())
+            #conn.putrequest("POST", url)
+            
     
     def get_duoshuo_comment_form(self):
         pass
@@ -124,3 +124,26 @@ class DuoshuoAPI(object):
 
     def setPublicKey(self, key):
         self.public_key = key
+    
+    def _auth(self):
+        post_data = None if post_args is None else urllib.urlencode(post_args)
+        file = urllib.urlopen("https://graph.facebook.com/" + path + "?" +
+                              urllib.urlencode(args), post_data)
+        try:
+            response = _parse_json(file.read())
+        finally:
+            file.close()
+        
+def get_hash(url):
+    urlparts = urlparse.urlparse(url)
+    
+    if urlparts.query:
+        norm_url = '%s?%s' % (urlparts.path, urlparts.query)
+    elif params:
+        norm_url = '%s?%s' % (urlparts.path, get_normalized_params(params))
+    else:
+        norm_url = urlparts.path
+        
+    #params = urlparts.params
+    print norm_url
+    #return binascii.b2a_base64(hashlib.sha1(urlparts.params).digest())[:-1]
