@@ -1,0 +1,18 @@
+{% load ds %}
+
+<form action="" method="post">
+    {% csrf_token %}
+{{form.as_p}}
+<input name="identifier" value="{{identifier}}"/>
+<input type="submit"/>
+</form>
+<a href="{{oauth_url}}">连接到多说</a>
+
+{% if request.GET.code %}
+<form action"" method="post">
+{{register_form.as_p}}
+<input name="identifier" value="{{identifier}}"/>
+<input type="submit"/>
+</form>
+
+{% endif %}

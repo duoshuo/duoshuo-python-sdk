@@ -1,0 +1,8 @@
+{% load ds %}
+
+<form action="" method="post">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit">
+</form>
+<a href="{{oauth_url}}">连接到多说</a>

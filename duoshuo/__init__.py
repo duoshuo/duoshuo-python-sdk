@@ -5,14 +5,12 @@
 #
 __version__ = '0.1'
 
-import os.path
 import urllib
 import urllib2
 import warnings
 import urlparse
-import binascii
 import hashlib
-import hmac
+import settings
 
 try:
     import json
@@ -31,6 +29,8 @@ except ImportError:
     import https.cookies as Cookie #python 3.0
 
 HOST = 'api.duoshuo.com/oauth2'
+DUOSHUO_CLIENT_ID = getattr(settings, "DUOSHUO_CLIENT_ID", None)
+DUOSHUO_SECRET = getattr(settings, "DUOSHUO_SECRET", None)
 
 class APIError(Exception):
     def __init__(self, code, message):
@@ -66,7 +66,7 @@ class Result(object):
 
 
 class DuoshuoAPI(object):
-    def __init__(self, client_id=None, secret=None, version='1.0', **kwargs):
+    def __init__(self, client_id=DUOSHUO_CLIENT_ID, secret=DUOSHUO_SECRET, version='1.0', **kwargs):
         self.client_id = client_id
         self.secret = secret
         if not secret:
