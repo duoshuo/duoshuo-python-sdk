@@ -152,3 +152,29 @@ def duoshuo_register(request):
         }
         return render_to_response('register.html', context,
                                   context_instance=RequestContext(request))
+
+def callback(request):
+    duoshuo_code = request.GET.get('code','')
+    if duoshuo_code:
+        ds = DuoshuoAPI()
+        response = ds.get_token(code=duoshuo_code)
+        request.session['access_token'] = response['access_token']
+        duoshuo_id = response['user_id']
+        binding = UserProfile.objects.filter(duoshuo_id=duoshuo_id).count()
+        if binding:
+            userprofile = UserProfile.objects.get(duoshuo_id=duoshuo_id)
+            user = userprofile.user
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            
+            login(request, user)
+            return HttpResponseRedirect('/')
+        else:
+            if request.user.id:
+                userprofile = request.user.get_profile()
+                userprofile.duoshuo_id = response['user_id']
+                userprofile.save()
+                return HttpResponseRedirect('/')
+            else:
+                return HttpResponseRedirect('/login/')
+    else:
+        return HttpResponseRedirect('/login/')
