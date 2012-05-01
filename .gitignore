@@ -11,5 +11,3 @@
 .tmp*
 migrations
 custom_settings.py
-media/upload/
-media/cover/
