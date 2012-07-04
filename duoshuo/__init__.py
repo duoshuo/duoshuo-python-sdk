@@ -3,7 +3,7 @@
 #
 # Copyright 2012 Duoshuo
 #
-__version__ = '0.1'
+__version__ = '0.2'
 
 import urllib
 import urllib2
@@ -28,8 +28,8 @@ try:
 except ImportError:
     import https.cookies as Cookie #python 3.0
 
-HOST = 'api.duoshuo.com/oauth2'
-DUOSHUO_CLIENT_ID = getattr(settings, "DUOSHUO_CLIENT_ID", None)
+HOST = 'api.duoshuo.com'
+DUOSHUO_SHORT_NAME = getattr(settings, "DUOSHUO_SHORTNAME", None)
 DUOSHUO_SECRET = getattr(settings, "DUOSHUO_SECRET", None)
 
 class APIError(Exception):
@@ -66,11 +66,11 @@ class Result(object):
 
 
 class DuoshuoAPI(object):
-    def __init__(self, client_id=DUOSHUO_CLIENT_ID, secret=DUOSHUO_SECRET, version='1.0', **kwargs):
-        self.client_id = client_id
+    def __init__(self, short_name=DUOSHUO_SHORT_NAME, secret=DUOSHUO_SECRET, version='1.0', **kwargs):
+        self.short_name = short_name
         self.secret = secret
-        if not secret:
-            warnings.warn('You should pass ``secret``.')
+        if not secret or not short_name:
+            warnings.warn('You should pass short_name and secret.')
         self.version = version
     
     def __call__(self, **kwargs):
@@ -94,8 +94,8 @@ class DuoshuoAPI(object):
         if not redirect_uri:
             raise APIError('01', 'Invalid request: redirect_uri')
         else:
-            params = {'client_id': self.client_id, 'redirect_uri': redirect_uri, 'response_type': 'code'}
-            return 'http://%s/%s?%s' % (HOST, 'authorize', \
+            params = {'client_id': self.short_name, 'redirect_uri': redirect_uri, 'response_type': 'code'}
+            return 'http://%s/oauth2/%s?%s' % (HOST, 'authorize', \
                 urllib.urlencode(sorted(params.items())))
     
     def get_token(self, code=None):
