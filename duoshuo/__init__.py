@@ -3,7 +3,7 @@
 #
 # Copyright 2012 Duoshuo
 #
-__version__ = '0.2'
+__version__ = '0.1'
 
 import urllib
 import urllib2
@@ -66,7 +66,7 @@ class Result(object):
 
 
 class DuoshuoAPI(object):
-    def __init__(self, short_name=DUOSHUO_SHORT_NAME, secret=DUOSHUO_SECRET, version='1.0', **kwargs):
+    def __init__(self, short_name=DUOSHUO_SHORT_NAME, secret=DUOSHUO_SECRET, version=__version__, **kwargs):
         self.short_name = short_name
         self.secret = secret
         if not secret or not short_name:

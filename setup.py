@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 setup(
     name="duoshuo-python-sdk",
     version="0.1",
-    description="A Python library for using the box API",
+    description="A Python library for using the duoshuo API",
     author="Perchouli",
     author_email="jp.chenyang@gmail.com",
     url="https://github.com/duoshuo/duoshuo-python-sdk",
