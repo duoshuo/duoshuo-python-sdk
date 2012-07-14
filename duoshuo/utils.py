@@ -15,6 +15,7 @@ import json
 
 API = 'http://api.duoshuo.com/oauth2/authorize'
 DUOSHUO_SECRET = getattr(settings, "DUOSHUO_SECRET", None)
+DUOSHUO_SHORT_NAME = getattr(settings, "DUOSHUO_SHORTNAME", None)
 
 """
 实现Remote Auth后可以在评论框显示本地身份
@@ -36,8 +37,26 @@ def remote_auth(user_id, name, email, url=None, avatar=None):
     return sig
 
 
-def sync_article(thread):
-    pass
+def sync_article(article):
+    userprofile = request.user.get_profile()
+    if userprofile.duoshuo_id:
+        author_id = userprofile.duoshuo_id
+    else:
+        author_id = 0
+
+    api_url = 'http://api.duoshuo.com/threads/sync.json'
+    #TODO: get article url from urls.py
+    url_hash = hashlib.md5(article.url).hexdigest()
+    data = urllib.urlencode({
+        'short_name' : DUOSHUO_SHORT_NAME,
+        'source_thread_id' : article.id,
+        'url' : article.url,
+        'url_hash' : url_hash,
+        'author_id' : author_id
+    })
+    
+    response = json.loads(urllib2.urlopen(api_url, data).read())['response']
+    return response
 
 def sync_user():
     users = User.objects.all()
