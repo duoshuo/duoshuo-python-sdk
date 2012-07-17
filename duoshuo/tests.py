@@ -1,16 +1,29 @@
+# -*- coding:utf-8 -*-
+#!/usr/bin/env python
+
 """
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
+多说API测试文件。作为通用的Python程序，没有使用Django的TestCase
 """
+import os
+import unittest
+os.sys.path.append('/home/perchouli/duoshuo-python-sdk/')
 
-from django.test import TestCase
+import duoshuo
+
+class DuoshuoAPITest(unittest.TestCase):
+    DUOSHUO_SHORT_NAME = 'test'
+    DUOSHUO_SECRET_KEY = 'a'*64
+
+    HOST = duoshuo.HOST
+    
+    def test_host(self):
+        host = self.HOST
+        self.assertEqual(host + 'api.duoshuo.com')
 
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+    def test_resource(self):
+        pass
+        #rs = duoshuo.Resource(INTERFACES)
+
+if __name__ == '__main__':
+    unittest.main()
