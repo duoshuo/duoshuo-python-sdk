@@ -89,7 +89,7 @@ class Resource(object):
         interface = self.interface
         if attr not in interface:
             interface[attr] = {}
-            raise APIError('03', 'Interface is not defined')
+            #raise APIError('03', 'Interface is not defined')
         return Resource(self.api, interface[attr], attr, self.tree)
 
     def __call__(self, **kwargs):
@@ -124,12 +124,18 @@ class Resource(object):
 
         if method == 'GET':
             path = '%s?%s' % (path, urllib.urlencode(params))
-            response = urllib2.urlopen(path)
+            print path
+            data = ''
         else:
             data = urllib.urlencode(params)
-            response = urllib2.urlopen(path, data)
-            
-        return _parse_json(response.read())['response']
+
+        try:
+            response = data and urllib2.urlopen(path, data) or urllib2.urlopen(path)
+            response = _parse_json(response.read())['response']
+        except:
+            response = _parse_json('{"code": "500"}')
+
+        return response
 
 class DuoshuoAPI(Resource):
     def __init__(self, short_name=DUOSHUO_SHORT_NAME, secret=DUOSHUO_SECRET, format='json', **kwargs):
@@ -147,14 +153,7 @@ class DuoshuoAPI(Resource):
     def _get_key(self):
         return self.secret
     key = property(_get_key)
-            
-    def get_url(self, redirect_uri=None):
-        if not redirect_uri:
-            raise APIError('01', 'Invalid request: redirect_uri')
-        else:
-            params = {'client_id': self.short_name, 'redirect_uri': redirect_uri, 'response_type': 'code'}
-            return '%s://%s/oauth2/%s?%s' % (URI_SCHEMA, HOST, 'authorize', \
-                urllib.urlencode(sorted(params.items())))
+
     
     def get_token(self, code=None):
         if not code:
@@ -165,21 +164,17 @@ class DuoshuoAPI(Resource):
             #params = {'client_id': self.client_id, 'secret': self.secret, 'redirect_uri': redirect_uri, 'code': code}
             params = {'code': code}
             data = urllib.urlencode(params)
-            url = '%s://%s/%s' % (URI_SCHEMA, HOST, 'access_token')#, \
+            url = '%s://%s/oauth2/access_token' % (URI_SCHEMA, HOST)#, \
                 #urllib.urlencode(sorted(params.items())))
+            print url
             request = urllib2.Request(url)
             response = urllib2.build_opener(urllib2.HTTPCookieProcessor()).open(request, data)
-            #file = urllib.urlopen(url)
-            #print 'url: '+url + '\r\ndata: ' + data
+
             return _parse_json(response.read())
-    
-    def get_duoshuo_comment_form(self):
-        pass
 
-    def setSecretKey(self, key):
-        self.secret_key = key
-    setKey = setSecretKey
+    def setSecret(self, key):
+        self.secret = key
 
-    def setPublicKey(self, key):
-        self.public_key = key
+    def setFormat(self, key):
+        self.format = key
 

@@ -13,6 +13,8 @@ import urllib2
 import urlparse
 import json
 
+from duoshuo import DuoshuoAPI
+
 API = 'http://api.duoshuo.com/oauth2/authorize'
 DUOSHUO_SECRET = getattr(settings, "DUOSHUO_SECRET", None)
 DUOSHUO_SHORT_NAME = getattr(settings, "DUOSHUO_SHORTNAME", None)
@@ -58,21 +60,22 @@ def sync_article(article):
     response = json.loads(urllib2.urlopen(api_url, data).read())['response']
     return response
 
-def sync_user():
-    users = User.objects.all()
-    url = API
-    user_list = []
-    for user in users:
-        user_list.append(user.username)
-    
-    #request = urllib2.Request(url, '', {'User-Agent': 'duoshuo-python-sdk'})
-    data = urllib.urlencode({
-                'client_id': '3076981980',
-                'response_type': 'code',
-            
-            })
-    request = urllib2.urlopen( '%s?%s' % (API, data))
-    print request.read()
+def sync_user(user):
+    data['users[%s][name]'% user.id] = user.username
+    data['users[%s][email]'% user.id] = user.email
+
+    api = DuoshuoAPI()
+    response = api.users.import(user)
+
+    return response
+
+def get_url(self, redirect_uri=None):
+    if not redirect_uri:
+        raise ValueError('Missing required argument: redirect_uri')
+    else:
+        params = {'client_id': self.short_name, 'redirect_uri': redirect_uri, 'response_type': 'code'}
+        return '%s://%s/oauth2/%s?%s' % (URI_SCHEMA, HOST, 'authorize', \
+            urllib.urlencode(sorted(params.items())))
 
 def sync_comment():
     pass
