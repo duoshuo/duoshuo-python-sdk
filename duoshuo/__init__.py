@@ -124,7 +124,6 @@ class Resource(object):
 
         if method == 'GET':
             path = '%s?%s' % (path, urllib.urlencode(params))
-            print path
             data = ''
         else:
             data = urllib.urlencode(params)

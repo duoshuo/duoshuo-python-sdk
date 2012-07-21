@@ -6,7 +6,18 @@
 
 Python 2.6+
 
-# Usage
+Django 1.2+ (如果在Django中使用)
+
+# Index
+
+[Python Useage](#python-usage)
+
+[Django useage](#django-usage)
+
+
+# Python Usage
+
+作为Python models来使用
 
 ## Core (`__init__`.py)
 
@@ -20,8 +31,13 @@ sdk核心功能： 交换token，生成授权链接，调用api接口
 
     code = reqeust.GET.get(code)
 
-    ds = DuoshuoAPI(short_name=YOUR_DUOSHUO_SHORTNAME, secret=YOUR_DUOSHUO_SECRET)
+    api = DuoshuoAPI(short_name=YOUR_DUOSHUO_SHORTNAME, secret=YOUR_DUOSHUO_SECRET)
 
+    `#例如要获取用户信息
+    api.users.details(user_id=1)
+
+
+更多API可以查看[多说开发文档](http://dev.duoshuo.com/docs "多说开发文档") 。
 
 ### 交换token
 
@@ -53,3 +69,28 @@ template/xxx.html
 多说主要挂件：最新评论，最近访客
 
 soon coming...
+
+# Django Usage
+
+作为Django app来使用
+
+## 0. 安装duoshuo插件
+
+	pip install duoshuo
+
+	INSTALLED_APPS = (
+		...
+		'duoshuo',
+	)
+
+
+## 1. 导入已有数据
+
+	python manager.py ds_import user
+
+	python manager.py ds_import comment
+
+
+## 2. 显示多说评论框
+
+	{% load duoshuo %}
