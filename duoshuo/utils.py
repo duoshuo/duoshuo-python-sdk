@@ -13,11 +13,9 @@ import urllib2
 import urlparse
 import json
 
-from duoshuo import DuoshuoAPI
+from . import DUOSHUO_SECRET
 
-API = 'http://api.duoshuo.com/oauth2/authorize'
-DUOSHUO_SECRET = getattr(settings, "DUOSHUO_SECRET", None)
-DUOSHUO_SHORT_NAME = getattr(settings, "DUOSHUO_SHORTNAME", None)
+print DUOSHUO_SECRET
 
 """
 实现Remote Auth后可以在评论框显示本地身份
@@ -35,8 +33,9 @@ def remote_auth(user_id, name, email, url=None, avatar=None):
     })
     message = base64.b64encode(data)
     timestamp = int(time.time())
-    sig = hmac.HMAC(DUOSHUO_SECRET_KEY, '%s %s' % (message, timestamp), hashlib.sha1).hexdigest()
-    return sig
+    sig = hmac.HMAC(DUOSHUO_SECRET, '%s %s' % (message, timestamp), hashlib.sha1).hexdigest()
+    duoshuo_query = '%s %s %s' % (message, sig, timestamp)
+    return duoshuo_query
 
 
 def sync_article(article):
@@ -65,7 +64,7 @@ def sync_user(user):
     data['users[%s][email]'% user.id] = user.email
 
     api = DuoshuoAPI()
-    response = api.users.import(user)
+    response = ''#api.users.import(user)
 
     return response
 
