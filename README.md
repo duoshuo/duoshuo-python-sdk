@@ -78,7 +78,7 @@ soon coming...
 
 ## 0. 安装duoshuo插件
 
-	pip install duoshuo
+	python setup.py install
 
 	INSTALLED_APPS = (
 		...
@@ -97,7 +97,7 @@ soon coming...
 
 ## 2. 显示多说评论框
 
-	{% load duoshuo %}
+	{% load duoshuo_tags %}
 
 	{% duoshuo_comments %}
 
