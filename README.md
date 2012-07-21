@@ -1,3 +1,5 @@
+![Banner](/perchouli/img/blob/master/banner-772x250.png?raw=true)
+
 # Duoshuo Python SDK
 
 本SDK支持用Python语言开发的网站，对其提供[多说]插件的支持。
@@ -33,7 +35,7 @@ sdk核心功能： 交换token，生成授权链接，调用api接口
 
     api = DuoshuoAPI(short_name=YOUR_DUOSHUO_SHORTNAME, secret=YOUR_DUOSHUO_SECRET)
 
-    `#例如要获取用户信息
+    #例如要获取用户信息
     api.users.details(user_id=1)
 
 
@@ -83,14 +85,25 @@ soon coming...
 		'duoshuo',
 	)
 
+	# settings.py
+	DUOSHUO_SECRET = '你的多说secret'
+	DUOSHUO_SHORTNAME = '你的多说short name'
 
 ## 1. 导入已有数据
 
 	python manager.py ds_import user
-
 	python manager.py ds_import comment
 
 
 ## 2. 显示多说评论框
 
 	{% load duoshuo %}
+
+	{% duoshuo_comments %}
+
+	#给多说评论框传递其他short name
+	{% duoshuo_comments '其他short name' %}
+
+## 3. 用户登录后,在评论框显示本地身份
+	# 请放在多说评论框tag: {{ duoshuo_comments }} 之前
+	{{ request.user|remote_auth|safe }}

@@ -12,7 +12,7 @@ import duoshuo
 
 class DuoshuoAPITest(unittest.TestCase):
     DUOSHUO_SHORT_NAME = 'test'
-    DUOSHUO_SECRET_KEY = 'a'*64
+    DUOSHUO_SECRET = 'a'*64
 
     HOST = duoshuo.HOST
     

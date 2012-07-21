@@ -44,3 +44,4 @@ class Command(BaseCommand):
 
         if args[0] == 'comment':
             comments = Comment.object.all()
+            
