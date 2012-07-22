@@ -13,9 +13,10 @@ import urllib2
 import urlparse
 import json
 
-from . import DUOSHUO_SECRET
-
-print DUOSHUO_SECRET
+try:
+    from . import DUOSHUO_SECRET
+except ValueError:
+    DUOSHUO_SECRET = None
 
 """
 实现Remote Auth后可以在评论框显示本地身份
@@ -68,12 +69,12 @@ def sync_user(user):
 
     return response
 
-def get_url(self, redirect_uri=None):
+def get_url(api, redirect_uri=None):
     if not redirect_uri:
         raise ValueError('Missing required argument: redirect_uri')
     else:
-        params = {'client_id': self.short_name, 'redirect_uri': redirect_uri, 'response_type': 'code'}
-        return '%s://%s/oauth2/%s?%s' % (URI_SCHEMA, HOST, 'authorize', \
+        params = {'client_id': api.short_name, 'redirect_uri': redirect_uri, 'response_type': 'code'}
+        return '%s://%s/oauth2/%s?%s' % (api.uri_schema, api.host, 'authorize', \
             urllib.urlencode(sorted(params.items())))
 
 def sync_comment():
