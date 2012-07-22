@@ -39,7 +39,7 @@ except ImportError:
     DUOSHUO_SHORT_NAME =None
     DUOSHUO_SECRET = None
 else:
-    DUOSHUO_SHORT_NAME = getattr(settings, "DUOSHUO_SHORTNAME", None)
+    DUOSHUO_SHORT_NAME = getattr(settings, "DUOSHUO_SHORT_NAME", None)
     DUOSHUO_SECRET = getattr(settings, "DUOSHUO_SECRET", None)
 
 class APIError(Exception):
@@ -49,30 +49,6 @@ class APIError(Exception):
 
     def __str__(self):
         return '%s: %s' % (self.code, self.message)
-
-# class Result(object):
-#     def __init__(self, response, cursor=None):
-#         self.response = response
-#         self.cursor = cursor or {}
-
-#     def __repr__(self):
-#         return '<%s: %s>' % (self.__class__.__name__, repr(self.response))
-
-#     def __iter__(self):
-#         for r in self.response:
-#             yield r
-
-#     def __len__(self):
-#         return len(self.response)
-
-#     def __getslice__(self, i, j):
-#         return list.__getslice__(self.response, i, j)
-
-#     def __getitem__(self, key):
-#         return list.__getitem__(self.response, key)
-
-#     def __contains__(self, key):
-#         return list.__contains__(self.response, key)
 
 class Resource(object):
     def __init__(self, api, interface=INTERFACES, node=None, tree=()):
@@ -141,6 +117,10 @@ class DuoshuoAPI(Resource):
         self.short_name = short_name
         self.secret = secret
         self.format = format
+
+        self.uri_schema = URI_SCHEMA
+        self.host = HOST
+        
         if not secret or not short_name:
             warnings.warn('You should pass short_name and secret.')
         #self.version = version
