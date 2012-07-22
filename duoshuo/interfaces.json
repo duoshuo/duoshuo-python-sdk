@@ -10,16 +10,6 @@
         "jsonp"
       ]
     },
-    "post": {
-      "thread": [
-        "forum"
-      ],
-      "method": "POST",
-      "formats": [
-        "json",
-        "jsonp"
-      ]
-    },
     "details": {
       "required": [
         "post_id"
