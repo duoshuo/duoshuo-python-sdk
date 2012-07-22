@@ -33,6 +33,12 @@ class DuoshuoAPITest(unittest.TestCase):
             ( api.host, self.DUOSHUO_SHORT_NAME, redirect_uri)
         )
 
+    def test_token(self):
+        api = self.API
+        response = api.get_token(code='c'*32)
+        
+        #print response
+
     def test_user_api(self):
         api = self.API
         response = api.users.details(user_id=1)
