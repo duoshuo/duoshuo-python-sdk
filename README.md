@@ -102,5 +102,5 @@ soon coming...
 	{% duoshuo_comments '其他short name' %}
 
 ## 3. 用户登录后,在评论框显示本地身份
-	# 请放在多说评论框tag: {{ duoshuo_comments }} 之前
+	# 请放在多说评论框tag: {{ duoshuo_comments }} 之后
 	{{ request.user|remote_auth|safe }}
