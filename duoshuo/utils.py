@@ -51,10 +51,10 @@ def sync_article(article):
     url_hash = hashlib.md5(article.url).hexdigest()
     data = urllib.urlencode({
         'short_name' : DUOSHUO_SHORT_NAME,
-        'source_thread_id' : article.id,
+        'thread_key' : article.id,
         'url' : article.url,
         'url_hash' : url_hash,
-        'author_id' : author_id
+        'author_key' : author_id
     })
     
     response = json.loads(urllib2.urlopen(api_url, data).read())['response']
