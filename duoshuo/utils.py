@@ -21,12 +21,12 @@ except ValueError:
 """
 实现Remote Auth后可以在评论框显示本地身份
 Use:
-    views.py: sig = remote_auth(id=request.user.id, name=request.user.username, email=request.user.email)
+    views.py: sig = remote_auth(key=request.user.id, name=request.user.username, email=request.user.email)
     template/xxx.html: duoshuoQuery['remote_auth'] = {{ sig }}
 """
 def remote_auth(user_id, name, email, url=None, avatar=None):
     data = json.dumps({
-        'id': user_id,
+        'key': user_id,
         'name': name,
         'email': email,
         'url': url,
@@ -77,5 +77,9 @@ def get_url(api, redirect_uri=None):
         return '%s://%s/oauth2/%s?%s' % (api.uri_schema, api.host, 'authorize', \
             urllib.urlencode(sorted(params.items())))
 
-def sync_comment():
-    pass
+def sync_comment(posts):
+    api_url = 'http://56we.duoshuo.com/api/import/comments.json'
+    data = urllib.urlencode({
+       'data' : posts,
+    })
+    response = json.loads(urllib2.urlopen(api_url, data).read())
