@@ -2,7 +2,7 @@
 
 # Duoshuo Python SDK
 
-本SDK支持用Python语言开发的网站，对其提供[多说]插件的支持。
+多说Python SDK支持用Python语言开发的网站，对其提供[多说]插件的支持。使用中遇到的问题请[到多说开发者中心提问](http://dev.duoshuo.com/threads/500c9c58a03193c12400000c "多说开发者中心") 。
 
 # Requirements
 
