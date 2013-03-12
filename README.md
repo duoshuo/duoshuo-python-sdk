@@ -31,7 +31,7 @@ sdk核心功能： 交换token，生成授权链接，调用api接口
 
     from duoshuo import DuoshuoAPI
 
-    code = reqeust.GET.get(code)
+    code = request.GET.get(code)
 
     api = DuoshuoAPI(short_name=YOUR_DUOSHUO_SHORT_NAME, secret=YOUR_DUOSHUO_SECRET)
 
@@ -44,7 +44,7 @@ sdk核心功能： 交换token，生成授权链接，调用api接口
 ### 交换token
 访问需要用户身份的接口时要先进行授权，采用OAuth2.0协议，Python SDK提供交换token的处理，实例化api后可以直接传入code来获取token：
 
-    code = reqeust.GET.get(code)
+    code = request.GET.get(code)
 
     token = api.get_token(redirect_uri=redirect_uri, code=code)
 
