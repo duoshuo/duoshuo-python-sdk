@@ -1,4 +1,4 @@
-![Banner](/perchouli/img/blob/master/banner-772x250.png?raw=true)
+![Banner](https://raw.github.com/perchouli/img/master/banner-772x250.png)
 
 # Duoshuo Python SDK
 
