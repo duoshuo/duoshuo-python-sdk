@@ -12,19 +12,22 @@ import urllib
 import urllib2
 import urlparse
 import json
+import jwt
 
 try:
-    from . import DUOSHUO_SECRET
-except ValueError:
-    DUOSHUO_SECRET = None
+    from django.conf import settings
+except ValueError, ImportError:
+    settings = {}
+    settings.DUOSHUO_SECRET = None
+    settings.DUOSHUO_SHORT_NAME = None
 
 """
-实现Remote Auth后可以在评论框显示本地身份
+实现Remote Auth后可以在评论框显示本地身份(已停用，由set_duoshuo_token代替)
 Use:
     views.py: sig = remote_auth(key=request.user.id, name=request.user.username, email=request.user.email)
     template/xxx.html: duoshuoQuery['remote_auth'] = {{ sig }}
 """
-def remote_auth(user_id, name, email, url=None, avatar=None):
+def remote_auth(user_id, name, email, url=None, avatar=None, DUOSHUO_SECRET=None):
     data = json.dumps({
         'key': user_id,
         'name': name,
@@ -34,10 +37,28 @@ def remote_auth(user_id, name, email, url=None, avatar=None):
     })
     message = base64.b64encode(data)
     timestamp = int(time.time())
-    sig = hmac.HMAC(DUOSHUO_SECRET, '%s %s' % (message, timestamp), hashlib.sha1).hexdigest()
+    sig = hmac.HMAC(settings.DUOSHUO_SECRET, '%s %s' % (message, timestamp), hashlib.sha1).hexdigest()
     duoshuo_query = '%s %s %s' % (message, sig, timestamp)
     return duoshuo_query
 
+"""
+在评论框显示本地身份
+Use:
+    from utils import set_duoshuo_token
+    response = HttpResponse()
+    return set_duoshuo_token(request, response)
+
+"""
+def set_duoshuo_token(request, response):
+    if (request.user.id):
+        token = {
+            'short_name': settings.DUOSHUO_SHORT_NAME,
+            'user_key': request.user.id,
+            'name': request.user.username,
+        }
+        signed_token = jwt.encode(token, settings.DUOSHUO_SECRET)
+        response.set_cookie('duoshuo_token', signed_token)
+    return response
 
 def sync_article(article):
     userprofile = request.user.get_profile()
@@ -60,14 +81,6 @@ def sync_article(article):
     response = json.loads(urllib2.urlopen(api_url, data).read())['response']
     return response
 
-def sync_user(user):
-    data['users[%s][name]'% user.id] = user.username
-    data['users[%s][email]'% user.id] = user.email
-
-    api = DuoshuoAPI()
-    response = ''#api.users.import(user)
-
-    return response
 
 def get_url(api, redirect_uri=None):
     if not redirect_uri:
