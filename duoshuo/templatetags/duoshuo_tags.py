@@ -1,9 +1,9 @@
 from django.template import Library, Node
 
-import settings
+import bijian.settings
 from ..utils import remote_auth as ds_remote_auth
 
-DUOSHUO_SHORT_NAME = getattr(settings, "DUOSHUO_SHORTNAME", None)
+DUOSHUO_SHORT_NAME = getattr(settings, "DUOSHUO_SHORT_NAME", None)
 DUOSHUO_SECRET = getattr(settings, "DUOSHUO_SECRET", None)
 
 register = Library()
