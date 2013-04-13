@@ -1,7 +1,7 @@
+# -*- coding: utf-8 -*-
+from django import template
+from django.conf import settings
 from django.template import Library, Node
-
-import bijian.settings
-from ..utils import remote_auth as ds_remote_auth
 
 DUOSHUO_SHORT_NAME = getattr(settings, "DUOSHUO_SHORT_NAME", None)
 DUOSHUO_SECRET = getattr(settings, "DUOSHUO_SECRET", None)
@@ -35,17 +35,18 @@ def duoshuo_comments(parser, token):
     elif len(short_name) == 2:
         return DuoshuoCommentsNode(short_name[1])
     else:
-        raise TemplateSyntaxError, "duoshuo_comments tag takes SHORT_NAME as exactly one argument"
+        raise template.TemplateSyntaxError, "duoshuo_comments tag takes SHORT_NAME as exactly one argument"
 duoshuo_comments = register.tag(duoshuo_comments)
 
-@register.filter
-def remote_auth(value):
-    user = value
-    duoshuo_query = ds_remote_auth(user.id, user.username, user.email)
-    code = '''
-    <script>
-    duoshuoQuery['remote_auth'] = '%s';
-    </script>
-    ''' % duoshuo_query
-    return code
-remote_auth.is_safe = True
+# 生成remote_auth，使用JWT后弃用
+# @register.filter
+# def remote_auth(value):
+#     user = value
+#     duoshuo_query = ds_remote_auth(user.id, user.username, user.email)
+#     code = '''
+#     <script>
+#     duoshuoQuery['remote_auth'] = '%s';
+#     </script>
+#     ''' % duoshuo_query
+#     return code
+# remote_auth.is_safe = True
