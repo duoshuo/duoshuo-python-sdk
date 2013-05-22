@@ -10,6 +10,10 @@ Python 2.6+
 
 Django 1.2+ (如果在Django中使用)
 
+# Install
+
+    python setup.py install
+
 # Index
 
 [Python Useage](#python-usage)
@@ -21,17 +25,13 @@ Django 1.2+ (如果在Django中使用)
 
 作为Python models来使用
 
-## Core (`__init__`.py)
+### Core (`__init__.py`)
 
 sdk核心功能： 交换token，生成授权链接，调用api接口
 
-***
-
-### 实例化duoshuoAPI
+#### 实例化duoshuoAPI
 
     from duoshuo import DuoshuoAPI
-
-    code = request.GET.get(code)
 
     api = DuoshuoAPI(short_name=YOUR_DUOSHUO_SHORT_NAME, secret=YOUR_DUOSHUO_SECRET)
 
@@ -41,41 +41,19 @@ sdk核心功能： 交换token，生成授权链接，调用api接口
 
 更多API可以查看[多说开发文档](http://dev.duoshuo.com/docs "多说开发文档") 。
 
-### 交换token
-访问需要用户身份的接口时要先进行授权，采用OAuth2.0协议，Python SDK提供交换token的处理，实例化api后可以直接传入code来获取token：
+#### 交换token
+访问需要登录的接口时要先进行授权，采用OAuth2.0协议，Python SDK提供交换token的处理，实例化api后可以直接传入code来获取token：
 
     code = request.GET.get(code)
 
     token = api.get_token(redirect_uri=redirect_uri, code=code)
 
 
-## Utils (utils.py)
-
-多说常用处理： remote_auth字符串加密。
-
-***
-views.py:
-
-    from duoshuo.utils import remote_auth
-    sig = remote_auth(id=request.user.id, name=request.user.username, email=request.user.email)
-
-template/xxx.html
-
-    duoshuoQuery['remote_auth'] = {{ sig }}
-
-## Widgets (widgets.py)
-
-多说主要挂件：最新评论，最近访客
-
-soon coming...
-
 # Django Usage
 
 作为Django app来使用
 
-## 0. 安装duoshuo插件
-
-    python setup.py install
+#### 0. 安装duoshuo插件
 
     INSTALLED_APPS = (
         ...
@@ -86,13 +64,12 @@ soon coming...
     DUOSHUO_SECRET = '你的多说secret，在多说管理后台 - 设置 - 密钥'
     DUOSHUO_SHORT_NAME = '你的多说short name，比如你注册了example.duoshuo.com，short name就是example'
 
-## 1. 导入已有数据
+#### 1. 导入已有用户
 
     python manager.py ds_import user
-    python manager.py ds_import comment
 
 
-## 2. 显示多说评论框
+#### 2. 显示多说评论框
 
     {% load duoshuo_tags %}
 
@@ -101,6 +78,3 @@ soon coming...
     #给多说评论框传递其他short name
     {% duoshuo_comments '其他short name' %}
 
-## 3. 用户登录后,在评论框显示本地身份
-    # 请放在多说评论框tag: {{ duoshuo_comments }} 之后
-    {{ request.user|remote_auth|safe }}
