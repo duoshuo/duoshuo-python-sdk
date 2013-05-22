@@ -75,32 +75,32 @@ soon coming...
 
 ## 0. 安装duoshuo插件
 
-	python setup.py install
+    python setup.py install
 
-	INSTALLED_APPS = (
-		...
-		'duoshuo',
-	)
+    INSTALLED_APPS = (
+        ...
+        'duoshuo',
+    )
 
-	# settings.py
-	DUOSHUO_SECRET = '你的多说secret'
-	DUOSHUO_SHORT_NAME = '你的多说short name'
+    # settings.py
+    DUOSHUO_SECRET = '你的多说secret，在多说管理后台 - 设置 - 密钥'
+    DUOSHUO_SHORT_NAME = '你的多说short name，比如你注册了example.duoshuo.com，short name就是example'
 
 ## 1. 导入已有数据
 
-	python manager.py ds_import user
-	python manager.py ds_import comment
+    python manager.py ds_import user
+    python manager.py ds_import comment
 
 
 ## 2. 显示多说评论框
 
-	{% load duoshuo_tags %}
+    {% load duoshuo_tags %}
 
-	{% duoshuo_comments %}
+    {% duoshuo_comments %}
 
-	#给多说评论框传递其他short name
-	{% duoshuo_comments '其他short name' %}
+    #给多说评论框传递其他short name
+    {% duoshuo_comments '其他short name' %}
 
 ## 3. 用户登录后,在评论框显示本地身份
-	# 请放在多说评论框tag: {{ duoshuo_comments }} 之后
-	{{ request.user|remote_auth|safe }}
+    # 请放在多说评论框tag: {{ duoshuo_comments }} 之后
+    {{ request.user|remote_auth|safe }}
