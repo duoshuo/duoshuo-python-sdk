@@ -82,5 +82,15 @@
         "jsonp"
       ]
     }
+  },
+  "log": {
+    "list": {
+      "required": [],
+      "method": "GET",
+      "formats": [
+        "json",
+        "jsonp"
+      ]
+    }
   }
 }
