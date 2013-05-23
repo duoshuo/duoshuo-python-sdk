@@ -27,7 +27,7 @@ except ImportError:
 try:
     import Cookie
 except ImportError:
-    import https.cookies as Cookie #python 3.0
+    import https.cookies as cookie
 
 HOST = 'api.duoshuo.com'
 URI_SCHEMA = 'http'
@@ -36,11 +36,12 @@ INTERFACES = _parse_json(open(os.path.join(os.path.dirname(__file__), 'interface
 try:
     import settings
 except ImportError:
-    DUOSHUO_SHORT_NAME =None
+    DUOSHUO_SHORT_NAME = None
     DUOSHUO_SECRET = None
 else:
     DUOSHUO_SHORT_NAME = getattr(settings, "DUOSHUO_SHORT_NAME", None)
     DUOSHUO_SECRET = getattr(settings, "DUOSHUO_SECRET", None)
+
 
 class APIError(Exception):
     def __init__(self, code, message):
@@ -49,6 +50,7 @@ class APIError(Exception):
 
     def __str__(self):
         return '%s: %s' % (self.code, self.message)
+
 
 class Resource(object):
     def __init__(self, api, interface=INTERFACES, node=None, tree=()):
@@ -75,7 +77,7 @@ class Resource(object):
 
         resource = self.interface
         for k in resource.get('required', []):
-            if k not in [ x.split(':')[0] for x in kwargs.keys() ]:
+            if k not in [x.split(':')[0] for x in kwargs.keys()]:
                 raise ValueError('Missing required argument: %s' % k)
 
         method = kwargs.pop('method', resource.get('method'))
@@ -85,9 +87,10 @@ class Resource(object):
         format = kwargs.pop('format', api.format)
         path = '%s://%s/%s.%s' % (URI_SCHEMA, HOST, '/'.join(self.tree), format)
 
-        if 'api_secret' not in kwargs and api.secret:
-            kwargs['api_secret'] = api.secret
-
+        if 'secret' not in kwargs and api.secret:
+            kwargs['secret'] = api.secret
+        if 'short_name' not in kwargs and api.short_name:
+            kwargs['short_name'] = api.short_name
         # We need to ensure this is a list so that
         # multiple values for a key work
         params = []
@@ -100,17 +103,16 @@ class Resource(object):
 
         if method == 'GET':
             path = '%s?%s' % (path, urllib.urlencode(params))
-            data = ''
+            response = urllib2.urlopen(path).read()
         else:
             data = urllib.urlencode(params)
+            response = urllib2.urlopen(path, data).read()
 
         try:
-            response = data and urllib2.urlopen(path, data) or urllib2.urlopen(path)
-            response = _parse_json(response.read())['response']
+            return _parse_json(response)
         except:
-            response = _parse_json('{"code": "500"}')
+            return _parse_json('{"code": "500"}')
 
-        return response
 
 class DuoshuoAPI(Resource):
     def __init__(self, short_name=DUOSHUO_SHORT_NAME, secret=DUOSHUO_SECRET, format='json', **kwargs):
@@ -120,7 +122,7 @@ class DuoshuoAPI(Resource):
 
         self.uri_schema = URI_SCHEMA
         self.host = HOST
-        
+
         if not secret or not short_name:
             warnings.warn('You should pass short_name and secret.')
         #self.version = version
@@ -133,7 +135,6 @@ class DuoshuoAPI(Resource):
         return self.secret
     key = property(_get_key)
 
-    
     def get_token(self, code=None):
         if not code:
             raise APIError('01', 'Invalid request: code')
@@ -143,8 +144,7 @@ class DuoshuoAPI(Resource):
             #params = {'client_id': self.client_id, 'secret': self.secret, 'redirect_uri': redirect_uri, 'code': code}
             params = {'code': code}
             data = urllib.urlencode(params)
-            url = '%s://%s/oauth2/access_token' % (URI_SCHEMA, HOST)#, \
-                #urllib.urlencode(sorted(params.items())))
+            url = '%s://%s/oauth2/access_token' % (URI_SCHEMA, HOST)
             print url
             request = urllib2.Request(url)
             response = urllib2.build_opener(urllib2.HTTPCookieProcessor()).open(request, data)
@@ -156,4 +156,3 @@ class DuoshuoAPI(Resource):
 
     def setFormat(self, key):
         self.format = key
-
