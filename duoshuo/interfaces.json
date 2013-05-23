@@ -52,7 +52,7 @@
     }
   },
   "users": {
-    "details": {
+    "profile": {
       "required": [
         "user_id"
       ],
