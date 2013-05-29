@@ -62,16 +62,6 @@
         "jsonp"
       ]
     },
-    "profile": {
-      "required": [
-        "user_id"
-      ],
-      "method": "GET",
-      "formats": [
-        "json",
-        "jsonp"
-      ]
-    },
     "import": {
       "required": [
         "users"
@@ -85,6 +75,16 @@
   },
   "log": {
     "list": {
+      "required": [],
+      "method": "GET",
+      "formats": [
+        "json",
+        "jsonp"
+      ]
+    }
+  },
+  "sites": {
+    "listTopThreads": {
       "required": [],
       "method": "GET",
       "formats": [
