@@ -25,7 +25,7 @@ Django 1.2+ (如果在Django中使用)
 
 作为Python models来使用
 
-### Core (`__init__.py`)
+### Core (__init__.py)
 
 sdk核心功能： 交换token，生成授权链接，调用api接口
 
@@ -55,12 +55,12 @@ sdk核心功能： 交换token，生成授权链接，调用api接口
 
 #### 0. 安装duoshuo插件
 
+    # settings.py
     INSTALLED_APPS = (
         ...
         'duoshuo',
     )
 
-    # settings.py
     DUOSHUO_SECRET = '你的多说secret，在多说管理后台 - 设置 - 密钥'
     DUOSHUO_SHORT_NAME = '你的多说short name，比如你注册了example.duoshuo.com，short name就是example'
 
