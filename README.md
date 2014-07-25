@@ -36,7 +36,7 @@ sdk核心功能： 交换token，生成授权链接，调用api接口
     api = DuoshuoAPI(short_name=YOUR_DUOSHUO_SHORT_NAME, secret=YOUR_DUOSHUO_SECRET)
 
     #例如要获取用户信息
-    api.users.details(user_id=1)
+    api.users.profile(user_id=1)
 
 
 更多API可以查看[多说开发文档](http://dev.duoshuo.com/docs "多说开发文档") 。
@@ -44,9 +44,9 @@ sdk核心功能： 交换token，生成授权链接，调用api接口
 #### 交换token
 访问需要登录的接口时要先进行授权，采用OAuth2.0协议，Python SDK提供交换token的处理，实例化api后可以直接传入code来获取token：
 
-    code = request.GET.get(code)
+    code = request.GET.get('code') #获得GET参数(以Django为例)
 
-    token = api.get_token(redirect_uri=redirect_uri, code=code)
+    token = api.get_token(code=code)
 
 
 # Django Usage
