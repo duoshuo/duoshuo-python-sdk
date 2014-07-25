@@ -1,0 +1,79 @@
+{% load duoshuo_tags %}
+<!DOCTYPE HTML>
+<html lang="zh-cn">
+</head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Duoshuo Python SDK Example</title>
+  <link href="http://semantic-ui.com/build/packaged/css/semantic.min.css" rel="stylesheet">
+  <style type="text/css">
+  a {
+    color: #009FDA;
+      text-decoration: none;
+  }
+
+  body {
+    margin:0px;
+    padding:0px;
+    color: #333;
+    font-family: Microsoft YaHei, Arial, Tahoma;
+    overflow-x: hidden;
+  }
+
+
+  </style>
+</head>
+<body ontouchstart>
+  <div id="top-menu" class="ui inverted menu">
+    <a class="logo item" href="/" title="Logo">Duoshuo Python SDK Example</a>
+    <a class="item" href="https://github.com/duoshuo/duoshuo-python-sdk"><i class="github alternate icon"></i></a>
+    <a class="item" href="https://dev.duoshuo.com"><i class="wrench icon"></i></a>
+  </div>
+{% block content %}{% endblock %}
+
+  <div id="main">
+    <div class="ui form segment">
+      <p class="ui header">多说Python实现SSO登录和JWT本地身份 {{ user.username }}</p>
+      {% if not user.is_authenticated %}
+      <form method="post" action="/login/">{% csrf_token %}
+        <div class="field">
+          <label>Username</label>
+          <input placeholder="Username" id="id_username" name="username" type="text">
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" id="id_password" name="password">
+        </div>
+        <div class="field">
+          <div class="ui">
+            <input type="hidden">
+            <div class="ds-login"></div>
+          </div>
+        </div>
+        <div class="field">
+          
+        </div>
+        <button class="ui blue submit button">Submit</button>
+        <div class="ui error message"></div>
+      </form>
+      {% else %}
+      <img class="ui image avatar" src="{{ profile.avatar }}"/><a href="/logout/" class="ui label red">登出{{ user.username }}</a>
+      {% endif %}
+    </div>
+    {% duoshuo_comments %}
+  </div>
+
+<script>
+var duoshuoQuery = {
+  short_name: "{{ settings.DUOSHUO_SHORT_NAME }}", 
+  sso: { 
+    login: "http://127.0.0.1:8000/callback/",
+    logout: "http://127.0.0.1:8000/logout/"
+  }
+};
+
+</script>
+{% block script %}{% endblock %}
+</body>
+</html>
