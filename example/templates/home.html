@@ -57,6 +57,10 @@
         <button class="ui blue submit button">Submit</button>
         <div class="ui error message"></div>
       </form>
+
+      <form method="post" action="/register/">
+
+      </form>
       {% else %}
       <img class="ui image avatar" src="{{ profile.avatar }}"/><a href="/logout/" class="ui label red">登出{{ user.username }}</a>
       {% endif %}
@@ -68,8 +72,8 @@
 var duoshuoQuery = {
   short_name: "{{ settings.DUOSHUO_SHORT_NAME }}", 
   sso: { 
-    login: "http://127.0.0.1:8000/callback/",
-    logout: "http://127.0.0.1:8000/logout/"
+    login: "http://10.244.129.159:8000/callback/",
+    logout: "http://10.244.129.159:8000/logout/"
   }
 };
 
