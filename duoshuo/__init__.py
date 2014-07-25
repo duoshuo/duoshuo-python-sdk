@@ -141,11 +141,13 @@ class DuoshuoAPI(Resource):
         #elif not redirect_uri:
         #    raise APIError('01', 'Invalid request: redirect_uri')
         else:
-            #params = {'client_id': self.client_id, 'secret': self.secret, 'redirect_uri': redirect_uri, 'code': code}
-            params = {'code': code}
+            params = {
+                'code': code,
+                'client_id': self.short_name,
+                'client_secret': self.secret,
+            }
             data = urllib.urlencode(params)
             url = '%s://%s/oauth2/access_token' % (URI_SCHEMA, HOST)
-            print url
             request = urllib2.Request(url)
             response = urllib2.build_opener(urllib2.HTTPCookieProcessor()).open(request, data)
 
