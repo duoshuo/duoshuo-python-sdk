@@ -19,12 +19,11 @@ def callback(request):
     response = api.get_token(code=code)
 
     if response.has_key('user_key'): #此多说账号在本站已经注册过了，直接登录
-        user         = User.objects.get(pk=int(response['user_key']))
+        user = User.objects.get(pk=int(response['user_key']))
         user.backend = 'django.contrib.auth.backends.ModelBackend'
         login(request, user)
     else: #此多说账号在本站未注册，添加一个用户
         response = api.users.profile(user_id=response['user_id'])['response']
-        print response
         username = response['name']
         if User.objects.filter(username=username).count():
             username = username + str(random.randrange(1,9)) #如果多说账号用户名和本站用户名重复，就加上随机数字
@@ -41,3 +40,34 @@ def callback(request):
         login(request, user)
     context = {}
     return HttpResponseRedirect('/')
+
+
+def register(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        if request.user.is_authenticated():
+            user = request.user
+        else:
+            user = User.objects.create_user(username=username, email=email, password=password)
+
+        api = DuoshuoAPI(short_name=DUOSHUO_SHORT_NAME, secret=DUOSHUO_SECRET)
+
+        # 把本站用户导入多说，参看：http://dev.duoshuo.com/docs/51435552047fe92f490225de
+        response = api.users.imports(data={
+            'users[0][user_key]' : user.id,
+            'users[0][name]': username,
+            'users[0][email]': email,
+        })['response']
+
+        user_profile = UserProfile.objects.get(user=user)
+        user_profile.duoshuo_id = int(response[str(user.id)])
+        user_profile.save()
+
+        if not request.user.is_authenticated():
+            login_user = authenticate(username=username, password=password)
+            login(request, login_user)
+
+        return HttpResponseRedirect('/')

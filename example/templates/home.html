@@ -34,12 +34,12 @@
 
   <div id="main">
     <div class="ui form segment">
-      <p class="ui header">多说Python实现SSO登录和JWT本地身份 {{ user.username }}</p>
+      <p class="ui header">多说Python实现SSO登录和JWT本地身份</p>
       {% if not user.is_authenticated %}
       <form method="post" action="/login/">{% csrf_token %}
         <div class="field">
           <label>Username</label>
-          <input placeholder="Username" id="id_username" name="username" type="text">
+          <input id="id_username" name="username" type="text">
         </div>
         <div class="field">
           <label>Password</label>
@@ -57,12 +57,48 @@
         <button class="ui blue submit button">Submit</button>
         <div class="ui error message"></div>
       </form>
-
-      <form method="post" action="/register/">
-
-      </form>
       {% else %}
       <img class="ui image avatar" src="{{ profile.avatar }}"/><a href="/logout/" class="ui label red">登出{{ user.username }}</a>
+      {% endif %}
+    </div>
+
+    <div class="ui form segment">
+      <p class="ui header">本站用户注册后导入多说</p>
+      {% if not user.is_authenticated %}
+      <form method="post" action="/register/">{% csrf_token %}
+        <div class="field">
+          <label>Email</label>
+          <input id="id_email" name="email" type="text">
+        </div>
+        <div class="field">
+          <label>Username</label>
+          <input id="id_username" name="username" type="text">
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" id="id_password" name="password">
+        </div>
+        <button class="ui blue submit button">Submit</button>
+        <div class="ui error message"></div>
+      </form>
+      {% else %}
+        {% if not profile.duoshuo_id %}
+        <form method="post" action="/register/">{% csrf_token %}
+          <p class="ui message red">{{ user.username }}已经登录本站，但没有duoshuo_id <button class="ui button green mini">同步</button></p>
+        </form>
+        {% else %}
+        <p class="ui message green">{{ user.username }}已经登录本站且导入多说了 <button class="ui button green mini" onclick="getDuoshuoUserInfo({{ profile.duoshuo_id }})">获取用户资料</button>
+        <div id="js-id-user-info" style="display: none;">
+          <table class="ui table segment">
+            <thead>
+              <tr><th>字段名</th>
+              <th>数值</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        </p>
+        {% endif %}
       {% endif %}
     </div>
     {% duoshuo_comments %}
@@ -72,11 +108,46 @@
 var duoshuoQuery = {
   short_name: "{{ settings.DUOSHUO_SHORT_NAME }}", 
   sso: { 
-    login: "http://10.244.129.159:8000/callback/",
-    logout: "http://10.244.129.159:8000/logout/"
+    login: "http://127.0.0.1:8000/callback/",
+    logout: "http://127.0.0.1:8000/logout/"
   }
 };
 
+function getDuoshuoUserInfo (duoshuoId) {
+  function jsonp (url) {
+    var head = document.head,
+      script = document.createElement('script');
+
+    script.setAttribute("src", url);
+    head.appendChild(script);
+    head.removeChild(script);
+  }
+  jsonp('//api.duoshuo.com/users/profile.jsonp?user_id=' + duoshuoId + '&callback=renderDuoshuoUserInfo')
+}
+
+function renderDuoshuoUserInfo (response) {
+  var user = response.response,
+    socials = user.social_uid;
+  if (Object.keys(socials).length == 0) { //这个本站用户没有绑定任何社交账号，popup[绑定更多]
+    var bindMoreButton = document.querySelector('.ds-bind-more');
+    bindMoreButton.click();
+  }
+  else {
+    var userInfo = document.getElementById('js-id-user-info'),
+      tbody = userInfo.querySelector('table tbody');
+    userInfo.style.display = '';
+    function appendItem (name, text) {
+      var item = document.createElement('tr')
+      item.innerHTML = '<td>' + name + '</td><td>' + text + '</td>';
+      tbody.appendChild(item);
+    }
+
+    if (user.hasOwnProperty('user_id')) appendItem('user_id', user.url);
+    if (user.hasOwnProperty('name')) appendItem('name', user.url);
+    if (user.hasOwnProperty('url')) appendItem('url', user.url);
+
+  }
+}
 </script>
 {% block script %}{% endblock %}
 </body>
