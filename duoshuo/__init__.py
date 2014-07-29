@@ -58,6 +58,7 @@ class Resource(object):
         self.node = node
         self.interface = interface
         if node:
+            if node == 'imports': node = 'import'
             tree = tree + (node,)
         self.tree = tree
 
@@ -91,6 +92,10 @@ class Resource(object):
             kwargs['secret'] = api.secret
         if 'short_name' not in kwargs and api.short_name:
             kwargs['short_name'] = api.short_name
+        if 'data' in kwargs and type(kwargs['data']) == dict:
+            user_data = kwargs.pop('data')
+            kwargs = dict(kwargs.items() + user_data.items())
+
         # We need to ensure this is a list so that
         # multiple values for a key work
         params = []
