@@ -91,6 +91,14 @@
         "json",
         "jsonp"
       ]
+    },
+    "join": {
+      "required": [],
+      "method": "POST",
+      "formats": [
+        "json",
+        "jsonp"
+      ]
     }
   }
 }
