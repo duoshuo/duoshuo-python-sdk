@@ -1,4 +1,4 @@
-# -*- coding:utf-8 -*-
+# coding: utf-8
 #!/usr/bin/env python
 #
 # Copyright 2012 Duoshuo
@@ -6,6 +6,9 @@
 __version__ = '0.1'
 
 import os
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 import urllib
 import urllib2
 import warnings
