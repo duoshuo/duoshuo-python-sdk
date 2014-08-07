@@ -11,7 +11,7 @@ setup(
     url="https://github.com/duoshuo/duoshuo-python-sdk",
     packages=find_packages(),
     package_data={
-        'interfaces.json' : 'duoshuo/interfaces.json'
+        'duoshuo' : ['*.json',]
     },
     install_requires=[
         'PyJWT',
