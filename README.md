@@ -16,9 +16,9 @@ Django 1.6+ (如果在Django中使用)
 
 # Index
 
-[Python Useage](#python-usage)
+[Python Usage](#python-usage)
 
-[Django useage](#django-usage)
+[Django usage](#django-usage)
 
 
 # Python Usage
